@@ -19,7 +19,6 @@ function init() {
   effect = new THREE.StereoEffect(renderer);
 
   scene = new THREE.Scene();
-  controls = new THREE.DeviceOrientationControls(scene, true);
 
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(0, 10, 0);
@@ -78,6 +77,8 @@ function init() {
     mesh = new THREE.Mesh( geometry, material );
     mesh.name = "ply";
     controls = new THREE.DeviceOrientationControls(mesh, true);
+    controls.connect();
+    controls.update();
 
     mesh.position.set( 0, 10, -25);
     mesh.rotation.set( 0, - Math.PI / 2, 0 );
@@ -87,9 +88,6 @@ function init() {
 
   } );
   loader.load( 'ply/dolphins.ply' );
-
-  controls.connect();
-  controls.update();
 
 
   window.addEventListener('resize', resize, false);
