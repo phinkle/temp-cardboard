@@ -79,7 +79,7 @@ function init() {
     mesh.name = "ply";
     controls = new THREE.DeviceOrientationControls(mesh, true);
 
-    mesh.position.set( 20, 15, 0);
+    mesh.position.set( 0, 10, -25);
     mesh.rotation.set( 0, - Math.PI / 2, 0 );
     mesh.scale.set( 0.05, 0.05, 0.05 );
 
