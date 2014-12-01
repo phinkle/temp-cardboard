@@ -1,6 +1,6 @@
 'use strict';
 
-var camera, scene, renderer;
+var camera, scene, renderer, mesh;
 var effect, controls;
 var element, container;
 
@@ -19,22 +19,12 @@ function init() {
   effect = new THREE.StereoEffect(renderer);
 
   scene = new THREE.Scene();
+  controls = new THREE.DeviceOrientationControls(scene, true);
 
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(0, 10, 0);
   scene.add(camera);
 
-  controls = new THREE.OrbitControls(camera, element);
-  controls.rotateUp(Math.PI / 8);
-  controls.panUp(Math.PI / 4);
-  controls.target.set(
-    camera.position.x + 0.1,
-    camera.position.y,
-    camera.position.z
-  );
-  controls.noZoom = true;
-  controls.noPan = true;
-  controls.autoRotate = false;
 
   function setOrientationControls(e) {
     if (!e.alpha) {
@@ -78,27 +68,28 @@ function init() {
   m.rotation.x = -Math.PI / 2;
   scene.add(m);
 
-  var mesh;
-
   // loading ply file
   var loader = new THREE.PLYLoader();
-        loader.addEventListener( 'load', function ( event ) {
-          console.log("found ply file");
+    loader.addEventListener( 'load', function ( event ) {
+    console.log("found ply file");
 
-          var geometry = event.content;
-          var material = new THREE.MeshPhongMaterial( { ambient: 0x0055ff, color: 0x0055ff, specular: 0x111111, shininess: 200 } );
-          mesh = new THREE.Mesh( geometry, material );
-          controls = new THREE.DeviceOrientationControls(mesh, true);
+    var geometry = event.content;
+    var material = new THREE.MeshPhongMaterial( { ambient: 0x0055ff, color: 0x0055ff, specular: 0x111111, shininess: 200 } );
+    mesh = new THREE.Mesh( geometry, material );
+    mesh.name = "ply";
+    controls = new THREE.DeviceOrientationControls(mesh, true);
 
-          mesh.position.set( 30, 20, 5);
-          mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          mesh.scale.set( 0.05, 0.05, 0.05 );
+    mesh.position.set( 30, 20, 5);
+    mesh.rotation.set( 0, - Math.PI / 2, 0 );
+    mesh.scale.set( 0.05, 0.05, 0.05 );
 
-          scene.add(mesh);
+    scene.add(mesh);
 
-        } );
-        loader.load( 'ply/dolphins.ply' );
+  } );
+  loader.load( 'ply/dolphins.ply' );
 
+  controls.connect();
+  controls.update();
 
 
   window.addEventListener('resize', resize, false);
