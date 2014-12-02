@@ -36,13 +36,14 @@ function init() {
   controls.noPan = true;
   controls.autoRotate = false;
 
+  controls = new THREE.DeviceOrientationControls(camera, true);
+    controls.connect();
+    controls.update();
+
   function setOrientationControls(e) {
     if (!e.alpha) {
       return;
     }
-controls = new THREE.DeviceOrientationControls(camera, true);
-    controls.connect();
-    controls.update();
     element.addEventListener('click', fullscreen, false);
 
     window.removeEventListener('deviceorientation', setOrientationControls);
