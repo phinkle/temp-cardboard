@@ -82,7 +82,7 @@ function init() {
   scene.add(m);
 
   var mesh;
-  displayPoints("ply/batman.ply");
+  displayPoints("ply/test.ply");
 
   // loading ply file
 //   var loader = new THREE.PLYLoader();
