@@ -149,7 +149,11 @@ function parsePoints(data) {
   for (var i = 0; i < lines.length - 1; i++) {
     var points = lines[i].split(" ");
 
-    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + 350, points[2]);
+    /** Threejs/ply coordinate system differences:
+     *  x and y are switched.
+     *  y is upside down. Multiply by -1 and add a buffer.
+     */
+    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + yOffset, points[2] + zOffset);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
@@ -163,6 +167,9 @@ function parsePoints(data) {
   scene.add(pointcloud);
 }
 
+/**
+ * Resize the canvas when the screen is resized.
+ */
 function resize() {
   var width = container.offsetWidth;
   var height = container.offsetHeight;
@@ -174,6 +181,9 @@ function resize() {
   effect.setSize(width, height);
 }
 
+/**
+ * Update the controls and projection matrix.
+ */
 function update(dt) {
   resize();
 
@@ -182,10 +192,16 @@ function update(dt) {
   controls.update(dt);
 }
 
+/**
+ * Render the scene using the stereo effect with the current scene and camera.
+ */
 function render(dt) {
   effect.render(scene, camera);
 }
 
+/**
+ * Animate the canvas by updating and rendering for each frame.
+ */
 function animate(t) {
   requestAnimationFrame(animate);
 
@@ -193,6 +209,9 @@ function animate(t) {
   render(clock.getDelta());
 }
 
+/**
+ * Handle fullscreen display.
+ */
 function fullscreen() {
   if (container.requestFullscreen) {
     container.requestFullscreen();
