@@ -138,22 +138,22 @@ function displayPoints(file) {
  */
 function parsePoints(data) {
   var pointSize = 1.0;
+  var xOffset = 200.0;
+  var yOffset = 350.0;
+  var zOffset = 0.0;
   var lines = data.split("\n");
   var geometry = new THREE.Geometry();
 
   var colors = [];
 
   for (var i = 0; i < lines.length - 1; i++) {
-    var xOffset = 200.0;
-    var yOffset = 350.0;
-    var zOffset = 0.0;
     var points = lines[i].split(" ");
 
     /** Threejs/ply coordinate system differences:
      *  x and y are switched.
      *  y is upside down. Multiply by -1 and add a buffer.
      */
-    var vector = new THREE.Vector3(points[1] - xOffset, (points[0] * -1) + yOffset, points[2] + zOffset);
+    var vector = new THREE.Vector3(points[1] - 200.0, (points[0] * -1) + 350, points[2] + zOffset);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
