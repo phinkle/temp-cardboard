@@ -149,7 +149,7 @@ function parsePoints(data) {
   for (var i = 0; i < lines.length - 1; i++) {
     var points = lines[i].split(" ");
 
-    var vector = new THREE.Vector3(points[1] + xOffset, (points[0] * -1) + yOffset, points[2] + zOffset);
+    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + 350, points[2]);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
