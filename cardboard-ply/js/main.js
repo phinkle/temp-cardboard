@@ -9,6 +9,9 @@ var clock = new THREE.Clock();
 init();
 animate();
 
+/**
+ * Initialize the scene for threejs by creating a WebGL renderer.
+ */
 function init() {
   renderer = new THREE.WebGLRenderer();
   renderer.setClearColorHex( 0xa3a3a3, 1 );
@@ -16,13 +19,19 @@ function init() {
   container = document.getElementById('canvas');
   container.appendChild(element);
 
+  // Create the Stereo effect for viewing in Google Cardboard.
   effect = new THREE.StereoEffect(renderer);
 
   scene = new THREE.Scene();
 
+  // Create a Perspective camera and initialize the position.
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(80, 80, 200);
   scene.add(camera);
+
+  /**
+   * Assign orbit controls to the camera.
+   */
 
   controls = new THREE.OrbitControls(camera, element);
   controls.rotateUp(Math.PI / 8);
@@ -36,10 +45,18 @@ function init() {
   controls.noPan = true;
   controls.autoRotate = false;
 
+  /**
+   * To move the object using the orbit controls pass in a THREE.Object3D to the constructor.
+   * This assignment causes the view to be stuck looking at the ground on the web browser, but works correctly on mobile.
+   * Must connect and update DeviceOrientationControls or the scene will not render correctly.
+   */
   controls = new THREE.DeviceOrientationControls(camera, true);
-    controls.connect();
-    controls.update();
+  controls.connect();
+  controls.update();
 
+  /**
+   * Change orientation on click events as well as on device orientation movement.
+   */
   function setOrientationControls(e) {
     if (!e.alpha) {
       return;
@@ -50,11 +67,8 @@ function init() {
   }
   window.addEventListener('deviceorientation', setOrientationControls, true);
 
-
   addLights();
-
   createGroundPlane();
-
   displayPoints("ply/batman.ply");
 
   window.addEventListener('resize', resize, false);
@@ -101,6 +115,9 @@ function createGroundPlane() {
   scene.add(mesh);
 }
 
+/**
+ * Takes in a file path of a ply file that will be displayed on the screen.
+ */
 function displayPoints(file) {
   var rawFile = new XMLHttpRequest();
   rawFile.open("GET", file, false);
@@ -115,7 +132,15 @@ function displayPoints(file) {
   rawFile.send(null);
 }
 
+/**
+ * Takes in the coordinates and colors of a ply file as a string.
+ * Parses through the points and created a point cloud from the data.
+ */
 function parsePoints(data) {
+  var pointSize = 1.0;
+  var xOffset = -200;
+  var yOffset = 350;
+  var zOffset = 0;
   var lines = data.split("\n");
   var geometry = new THREE.Geometry();
 
@@ -124,7 +149,7 @@ function parsePoints(data) {
   for (var i = 0; i < lines.length - 1; i++) {
     var points = lines[i].split(" ");
 
-    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + 350, points[2]);
+    var vector = new THREE.Vector3(points[1] + xOffset, (points[0] * -1) + yOffset, points[2] + zOffset);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
@@ -133,7 +158,7 @@ function parsePoints(data) {
   geometry.colors = colors;
   geometry.computeBoundingBox();
 
-  var material = new THREE.PointCloudMaterial( { size: 1.0, vertexColors: THREE.VertexColors } );
+  var material = new THREE.PointCloudMaterial( { size: pointSize, vertexColors: THREE.VertexColors } );
   var pointcloud = new THREE.PointCloud( geometry, material );
   scene.add(pointcloud);
 }
