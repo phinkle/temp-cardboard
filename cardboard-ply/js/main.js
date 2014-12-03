@@ -153,7 +153,7 @@ function parsePoints(data) {
      *  x and y are switched.
      *  y is upside down. Multiply by -1 and add a buffer.
      */
-    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + yOffset, points[2] + zOffset);
+    var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + 350, points[2]);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
