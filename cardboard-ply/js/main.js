@@ -51,13 +51,33 @@ function init() {
   window.addEventListener('deviceorientation', setOrientationControls, true);
 
 
-  var light = new THREE.HemisphereLight(0xffffff, 0x000000, 0.3);
-  scene.add(light);
+  addLights();
+
+  createGroundPlane();
+
+  displayPoints("ply/batman.ply");
+
+  window.addEventListener('resize', resize, false);
+  setTimeout(resize, 1);
+}
+
+/**
+ * Create a Hemisphere light and a directional light to the scene.
+ */
+function addLights() {
+  var hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.3);
+  scene.add(hemiLight);
 
   var dirLight = new THREE.DirectionalLight(0xffffff);
-  dirLight.position.set( 0, 0, 1);
+  dirLight.position.set(0, 0, 1);
   scene.add(dirLight);
+}
 
+/**
+ * Add a ground plane to the scene with a checkerboard pattern.
+ */
+function createGroundPlane() {
+  var groundSize = 1000;
   var texture = THREE.ImageUtils.loadTexture(
     'textures/patterns/checker.png'
   );
@@ -74,37 +94,11 @@ function init() {
     map: texture
   });
 
-  var geometry = new THREE.PlaneGeometry(1000, 1000);
+  var geometry = new THREE.PlaneGeometry(groundSize, groundSize);
 
-  // adding ground plane
-  var m = new THREE.Mesh(geometry, material);
-  m.rotation.x = -Math.PI / 2;
-  scene.add(m);
-
-  var mesh;
-  displayPoints("ply/batman.ply");
-
-  // loading ply file
-//   var loader = new THREE.PLYLoader();
-//         loader.addEventListener( 'load', function ( event ) {
-//           console.log("found ply file");
-
-//           var geometry = event.content;
-//           var material = new THREE.MeshPhongMaterial( { ambient: 0x0055ff, color: 0x0055ff, specular: 0x111111, shininess: 200 } );
-//           mesh = new THREE.Mesh( geometry, material );
-//           controls = new THREE.DeviceOrientationControls(camera, true);
-
-//           mesh.position.set( 5, 10, 0);
-//           mesh.rotation.set( 0, - Math.PI / 2, 0 );
-//           mesh.scale.set( 50, 50, 50 );
-
-//           scene.add(mesh);
-
-//         } );
-//         loader.load( 'ply/pikachu.ply' );
-
-  window.addEventListener('resize', resize, false);
-  setTimeout(resize, 1);
+  var mesh = new THREE.Mesh(geometry, material);
+  mesh.rotation.x = -Math.PI / 2;
+  scene.add(mesh);
 }
 
 function displayPoints(file) {
@@ -114,7 +108,6 @@ function displayPoints(file) {
       if (rawFile.readyState === 4) {
           if (rawFile.status === 200 || rawFile.status == 0) {
               var allText = rawFile.responseText;
-              // console.log(allText);
               parsePoints(allText);
           }
       }
@@ -129,7 +122,6 @@ function parsePoints(data) {
   var colors = [];
 
   for (var i = 0; i < lines.length - 1; i++) {
-    //console.log(lines[i]);
     var points = lines[i].split(" ");
 
     var vector = new THREE.Vector3(points[1] - 200, (points[0] * -1) + 350, points[2]);
