@@ -138,15 +138,15 @@ function displayPoints(file) {
  */
 function parsePoints(data) {
   var pointSize = 1.0;
-  var xOffset = 200.0;
-  var yOffset = 350.0;
-  var zOffset = 0.0;
   var lines = data.split("\n");
   var geometry = new THREE.Geometry();
 
   var colors = [];
 
   for (var i = 0; i < lines.length - 1; i++) {
+    var xOffset = 200.0;
+    var yOffset = 350.0;
+    var zOffset = 0.0;
     var points = lines[i].split(" ");
 
     /** Threejs/ply coordinate system differences:
