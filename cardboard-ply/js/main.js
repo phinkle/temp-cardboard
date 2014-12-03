@@ -138,8 +138,9 @@ function displayPoints(file) {
  */
 function parsePoints(data) {
   var pointSize = 1.0;
-  var xOffset = 200.0;
-  var yOffset = 350.0;
+  var xOffset = -200;
+  var yOffset = 350;
+  var zOffset = 0;
   var lines = data.split("\n");
   var geometry = new THREE.Geometry();
 
@@ -151,8 +152,10 @@ function parsePoints(data) {
     /** Threejs/ply coordinate system differences:
      *  x and y are switched.
      *  y is upside down. Multiply by -1 and add a buffer.
+     *
+     * Note: it is important to convert from string to number here otherwise you will be appending instead of adding.
      */
-    var vector = new THREE.Vector3(points[1] - xOffset, (points[0] * -1) + yOffset, points[2]);
+    var vector = new THREE.Vector3(Number(points[1]) + xOffset, (Number(points[0]) * -1) + yOffset, Number(points[2]) + zOffset);
     geometry.vertices.push(vector);
     var c = new THREE.Color("rgb(" + points[5] + "," + points[4] + "," + points[3] + ")" );
     colors[i] = c;
